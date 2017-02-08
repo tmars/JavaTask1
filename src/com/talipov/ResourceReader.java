@@ -29,11 +29,12 @@ public class ResourceReader {
     public void read() {
         Integer val = null;
         try {
-            while ((val = parser.getNext()) != null) {
+            while ((val = parser.getNext()) != null && totalizer.isActive()) {
                 totalizer.add(val);
             }
         } catch (ParserErrorException e) {
             System.out.println(e.getMessage());
+            totalizer.setActive(false);
         }
     }
 
