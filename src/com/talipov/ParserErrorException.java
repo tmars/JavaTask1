@@ -5,7 +5,7 @@ package com.talipov;
  */
 public class ParserErrorException extends Exception {
 
-    public ParserErrorException(String message) {
-        super(message);
+    public ParserErrorException(String s) {
+        super("Неверные данные: '" + s + "'");
     }
 }
