@@ -7,21 +7,21 @@ public class Totalizer {
     /**
      * Результат операции
      */
-    private int total = 0;
+    private int result = 0;
 
     private boolean checkRule(int num) {
         return num > 0 && num % 2 == 0;
     }
 
     public void add(int num) {
-        if (checkRule(num) == false) {
+        if (!checkRule(num)) {
             return;
         }
-        total += num;
-        System.out.println("Result: " + Integer.toString(total));
+        result += num;
+        System.out.println("\rResult: " + result + " Num:" + num);
     }
 
     public int getResult() {
-        return total;
+        return result;
     }
 }
