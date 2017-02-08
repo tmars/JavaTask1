@@ -1,10 +1,13 @@
+import org.junit.*;
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.fail;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Scanner;
+
 import com.talipov.Parser;
 import com.talipov.ParserErrorException;
-import org.junit.*;
-
-import static junit.framework.TestCase.assertEquals;
-import java.util.Arrays;
-
 
 /**
  * Created by Марсель on 07.02.2017.
@@ -12,35 +15,50 @@ import java.util.Arrays;
 public class ParserTest {
     private Parser parser;
 
-    public ParserTest() {
-        parser = new Parser();
+    private ArrayList<Integer> test(String input) throws ParserErrorException {
+        Parser parser = new Parser(new Scanner(input));
+        ArrayList<Integer> nums = new ArrayList<>();
+        Integer value;
+        while ((value = parser.getNext()) != null) {
+            nums.add(value);
+        }
+
+        return nums;
     }
 
     @Test
     public void correctTest() throws ParserErrorException {
-        assertEquals(Arrays.asList(1, 2), parser.parse("1 2"));
-        assertEquals(Arrays.asList(3, -4), parser.parse("3 -4"));
+        assertEquals(Arrays.asList(1, 2), test("1 2"));
+        assertEquals(Arrays.asList(3, -4), test("3 -4"));
     }
 
     @Test
     public void spaceTest() throws ParserErrorException {
-        assertEquals("Лидирующие пробелы", Arrays.asList(1, 2), parser.parse("   1 2"));
-        assertEquals("Завершающие пробелы", Arrays.asList(3, -4), parser.parse("3 -4   "));
-        assertEquals("Лишние пробелы между числами", Arrays.asList(5, -6), parser.parse("5   -6"));
+        assertEquals("Лидирующие пробелы", Arrays.asList(1, 2), test("   1 2"));
+        assertEquals("Завершающие пробелы", Arrays.asList(3, -4), test("3 -4   "));
+        assertEquals("Лишние пробелы между числами", Arrays.asList(5, -6), test("5   -6"));
     }
 
-    @Test(expected = ParserErrorException.class)
-    public void floatTest() throws ParserErrorException {
-        parser.parse("1 2.3");
+    @Test
+    public void floatTest() {
+        try {
+            test("1 2.3");
+            fail("Числа с плавающей запятой");
+        } catch (ParserErrorException e) {
+        }
     }
 
-    @Test(expected = ParserErrorException.class)
+    @Test
     public void incorrectStringTest() throws ParserErrorException {
-        parser.parse("1 error 2");
+        try {
+            test("1 error 2");
+            fail("Некорректные символы");
+        } catch (ParserErrorException e) {
+        }
     }
 
     @AfterClass
     public static void finish() {
-        System.out.println("Тесты завершены.");
+        System.out.println("Тесты класса Parser завершены.");
     }
 }
