@@ -5,16 +5,32 @@ import java.util.ArrayList;
 
 /**
  * Created by Марсель on 08.02.2017.
+ * Пул потоков обработки всех ресурсов
  */
 public class ResourcePoolWorker {
 
+    /**
+     * Список потоков обработки
+     */
     private ArrayList<Thread> threads = new ArrayList<>();
+
+    /**
+     * Общий обработчик данных всех ресурсов
+     */
     private Totalizer totalizer;
 
+    /**
+     * Конструктор
+     * @param totalizer общий обработчик данных всех ресурсов
+     */
     public ResourcePoolWorker(Totalizer totalizer) {
         this.totalizer = totalizer;
     }
 
+    /**
+     * Запуск потоков обработки ресурсов
+     * @param resources список ресурсов: URL или путь до файла
+     */
     public void work(String[] resources) {
 
         for (String resource: resources) {
@@ -40,6 +56,4 @@ public class ResourcePoolWorker {
             }
         }
     }
-
-
 }

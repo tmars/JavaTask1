@@ -4,6 +4,7 @@ import static junit.framework.TestCase.assertEquals;
 
 /**
  * Created by Марсель on 07.02.2017.
+ * Модульный тест общего обработчика данных всех ресурсов
  */
 public class TotalizerTest {
 

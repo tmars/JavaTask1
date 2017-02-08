@@ -11,6 +11,7 @@ import com.talipov.ParserErrorException;
 
 /**
  * Created by Марсель on 07.02.2017.
+ * Модульные тест парсера данных из ресурса
  */
 public class ParserTest {
     private Parser parser;

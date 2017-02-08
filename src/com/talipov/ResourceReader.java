@@ -10,12 +10,26 @@ import java.util.Scanner;
 
 /**
  * Created by Марсель on 08.02.2017.
+ * Ридер данных из ресурса с помощью парсера
  */
 public class ResourceReader {
 
+    /**
+     * Парсер данных из ресурсов
+     */
     private Parser parser;
+
+    /**
+     * Общий обработчик данных всех ресурсов
+     */
     private Totalizer totalizer;
 
+    /**
+     * Конструктор
+     * @param resource ресурс: URL или путь до файла
+     * @param totalizer общий обработчик данных всех ресурсов
+     * @throws FileNotFoundException выкидывается в случае если ресурс не найден
+     */
     public ResourceReader(String resource, Totalizer totalizer) throws FileNotFoundException {
         InputStream stream = getStream(resource);
         if (stream == null) {
@@ -26,6 +40,11 @@ public class ResourceReader {
         this.totalizer = totalizer;
     }
 
+    /**
+     * Последовательное чтение данных из ресурса по средствам парсера.
+     * Если попались некорректные данные, то общий обработчик помечается неактивным,
+     * для того чтобы другие потоки обработки остановились
+     */
     public void read() {
         Integer val = null;
         try {
@@ -38,6 +57,11 @@ public class ResourceReader {
         }
     }
 
+    /**
+     * Возвращает поток данных соответствующего ресурса
+     * @param path ресурс: URL или путь до файла
+     * @return потом данных для чтения
+     */
     private InputStream getStream(String path) {
         URL url;
         if (path.startsWith("http://") || path.startsWith("https://")) {

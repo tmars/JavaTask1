@@ -1,7 +1,6 @@
 package com.talipov;
 
 import java.io.FileNotFoundException;
-import java.util.Arrays;
 
 public class Main {
 
@@ -29,6 +28,11 @@ public class Main {
         }
     }
 
+    /**
+     * Обработка ресурсов в один поток
+     * @param resources список ресурсов
+     * @param totalizer общий обработчик данных всех ресурсов
+     */
     private static void singleThread(String[] resources, Totalizer totalizer) {
         for (String resource: resources) {
             try {
@@ -41,6 +45,11 @@ public class Main {
         }
     }
 
+    /**
+     * Обработка ресурсов в многопоточном режиме
+     * @param resources список ресурсов
+     * @param totalizer общий обработчик данных всех ресурсов
+     */
     private static void multiThread(String[] resources, Totalizer totalizer) {
         ResourcePoolWorker worker = new ResourcePoolWorker(totalizer);
         worker.work(resources);
