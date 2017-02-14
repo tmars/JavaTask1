@@ -9,13 +9,13 @@ public class Totalizer {
     /**
      * Результат операции
      */
-    private int result = 0;
+    private volatile int result = 0;
 
     /**
      * Флаг, используется для остановки потоков
      * в случае ошибки при мультипоточной обработке
      */
-    private boolean isActive = true;
+    private volatile boolean isActive = true;
 
     /**
      * Добавляет элемент в обработку
