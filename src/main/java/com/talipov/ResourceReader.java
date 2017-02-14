@@ -1,9 +1,9 @@
 package com.talipov;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
@@ -13,6 +13,11 @@ import java.util.Scanner;
  * Ридер данных из ресурса с помощью парсера
  */
 public class ResourceReader {
+
+    /**
+     * Логгер
+     */
+    private static final Logger logger = Logger.getLogger(ResourceReader.class);
 
     /**
      * Парсер данных из ресурсов
@@ -30,14 +35,15 @@ public class ResourceReader {
      * @param totalizer общий обработчик данных всех ресурсов
      * @throws FileNotFoundException выкидывается в случае если ресурс не найден
      */
-    public ResourceReader(String resource, Totalizer totalizer) throws FileNotFoundException {
+    public ResourceReader(String resource, Totalizer totalizer) throws ResourceNotFoundException {
         InputStream stream = getStream(resource);
         if (stream == null) {
-            throw new FileNotFoundException();
+            throw new ResourceNotFoundException();
         }
 
         this.parser = new Parser(new Scanner(stream));
         this.totalizer = totalizer;
+        PropertyConfigurator.configure("src/main/resources/log4j.xml");
     }
 
     /**
@@ -52,7 +58,7 @@ public class ResourceReader {
                 totalizer.add(val);
             }
         } catch (ParserErrorException e) {
-            System.out.println(e.getMessage());
+            logger.error("Ошибка парсинга", e);
             totalizer.setActive(false);
         }
     }
@@ -63,28 +69,27 @@ public class ResourceReader {
      * @return потом данных для чтения
      */
     private InputStream getStream(String path) {
-        URL url;
+        InputStream stream = null;
+
         if (path.startsWith("http://") || path.startsWith("https://")) {
             try {
-                url = new URL(path);
+                URL url = new URL(path);
+                stream = url.openStream();
             } catch (MalformedURLException e) {
-                System.out.println("Ошибка чтения ресурса по URL:" + path);
-                return null;
+                logger.error("Ошибка чтения ресурса по URL: " + path);
+            } catch (IOException e) {
+                logger.error("Ошибка при работе с ресурсом:" + path);
             }
         } else {
-            url = getClass().getResource(path);
-            if (url == null) {
-                System.out.println("Ошибка чтения файла ресурса:" + path);
-                return null;
+            try {
+                stream = new FileInputStream(path);
+            } catch (FileNotFoundException e) {
+                logger.error("Ошибка чтения файла ресурса: " + path);
             }
         }
 
-        try {
-            return url.openStream();
-        } catch (IOException e) {
-            System.out.println("Ошибка при работе с ресурсом:" + path);
-        }
-
-        return null;
+        return stream;
     }
+
+
 }

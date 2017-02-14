@@ -1,5 +1,8 @@
 package com.talipov;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
@@ -10,9 +13,14 @@ import java.util.ArrayList;
 public class ResourcePoolWorker {
 
     /**
+     * Логгер
+     */
+    private static final Logger logger = Logger.getLogger(ResourcePoolWorker.class);
+
+    /**
      * Список потоков обработки
      */
-    private ArrayList<Thread> threads = new ArrayList<>();
+    private ArrayList<Thread> threads = new ArrayList<Thread>();
 
     /**
      * Общий обработчик данных всех ресурсов
@@ -25,6 +33,7 @@ public class ResourcePoolWorker {
      */
     public ResourcePoolWorker(Totalizer totalizer) {
         this.totalizer = totalizer;
+        PropertyConfigurator.configure("src/main/resources/log4j.xml");
     }
 
     /**
@@ -35,15 +44,20 @@ public class ResourcePoolWorker {
 
         for (String resource: resources) {
             try {
-                ResourceReader reader = new ResourceReader(resource, this.totalizer);
-                Thread thread = new ResourceThread(reader);
+                final ResourceReader reader = new ResourceReader(resource, this.totalizer);
+                Thread thread = new Thread(new Runnable() {
+                    public void run() {
+                        reader.read();
+                    }
+                });
                 threads.add(thread);
-            } catch (FileNotFoundException e) {
-                System.out.println(e.getMessage());
+            } catch (ResourceNotFoundException e) {
+                logger.error("Во время работы потоков, произошла ошибка с чтением ресурса", e);
                 return;
             }
         }
 
+        logger.info("Запуск потоков обработки ресурсов. Кол-во: " + threads.size());
         for (Thread thread: threads) {
             thread.start();
         }
@@ -52,7 +66,7 @@ public class ResourcePoolWorker {
             try {
                 thread.join();
             } catch (InterruptedException e) {
-                System.out.println("Ошибка при работе с потоками");
+                logger.error("Ошибка при работе с потоками обработки ресурсов");
             }
         }
     }

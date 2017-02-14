@@ -18,7 +18,7 @@ public class ParserTest {
 
     private ArrayList<Integer> test(String input) throws ParserErrorException {
         Parser parser = new Parser(new Scanner(input));
-        ArrayList<Integer> nums = new ArrayList<>();
+        ArrayList<Integer> nums = new ArrayList<Integer>();
         Integer value;
         while ((value = parser.getNext()) != null) {
             nums.add(value);

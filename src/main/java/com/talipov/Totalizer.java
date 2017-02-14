@@ -1,10 +1,18 @@
 package com.talipov;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
 /**
  * Created by Марсель on 07.02.2017.
  * Общий обработчик данных всех ресурсов
  */
 public class Totalizer {
+
+    /**
+     * Логгер
+     */
+    private static final Logger logger = Logger.getLogger(Totalizer.class);
 
     /**
      * Результат операции
@@ -18,6 +26,13 @@ public class Totalizer {
     private volatile boolean isActive = true;
 
     /**
+     * Инициализация логгера
+     */
+    static {
+        PropertyConfigurator.configure("src/main/resources/log4j.xml");
+    }
+
+    /**
      * Добавляет элемент в обработку
      * @param num входной элемент
      */
@@ -26,7 +41,7 @@ public class Totalizer {
             return;
         }
         result += num;
-        System.out.println("\rСумма: " + result + ", Число: " + num);
+        logger.trace("Сумма: " + result + ", Число: " + num);
     }
 
     /**
