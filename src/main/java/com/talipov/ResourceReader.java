@@ -35,7 +35,7 @@ public class ResourceReader {
      * @param totalizer общий обработчик данных всех ресурсов
      * @throws FileNotFoundException выкидывается в случае если ресурс не найден
      */
-    public ResourceReader(Parser parser, Totalizer totalizer) throws ResourceNotFoundException {
+    public ResourceReader(Parser parser, Totalizer totalizer) {
         this.parser = parser;
         this.totalizer = totalizer;
         PropertyConfigurator.configure("src/main/resources/log4j.xml");

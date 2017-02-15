@@ -1,6 +1,7 @@
+package test;
+
 import org.junit.*;
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.fail;
+import static junit.framework.TestCase.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;

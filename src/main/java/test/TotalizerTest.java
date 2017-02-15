@@ -1,6 +1,8 @@
+package test;
+
 import com.talipov.Totalizer;
 import org.junit.*;
-import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.*;
 
 /**
  * Created by Марсель on 07.02.2017.
