@@ -31,17 +31,12 @@ public class ResourceReader {
 
     /**
      * Конструктор
-     * @param resource ресурс: URL или путь до файла
+     * @param parser парсер, который читает из ресурса
      * @param totalizer общий обработчик данных всех ресурсов
      * @throws FileNotFoundException выкидывается в случае если ресурс не найден
      */
-    public ResourceReader(String resource, Totalizer totalizer) throws ResourceNotFoundException {
-        InputStream stream = getStream(resource);
-        if (stream == null) {
-            throw new ResourceNotFoundException();
-        }
-
-        this.parser = new Parser(new Scanner(stream));
+    public ResourceReader(Parser parser, Totalizer totalizer) throws ResourceNotFoundException {
+        this.parser = parser;
         this.totalizer = totalizer;
         PropertyConfigurator.configure("src/main/resources/log4j.xml");
     }
@@ -68,7 +63,7 @@ public class ResourceReader {
      * @param path ресурс: URL или путь до файла
      * @return потом данных для чтения
      */
-    private InputStream getStream(String path) {
+    public static InputStream getStream(String path) throws ResourceNotFoundException {
         InputStream stream = null;
 
         if (path.startsWith("http://") || path.startsWith("https://")) {
@@ -88,6 +83,9 @@ public class ResourceReader {
             }
         }
 
+        if (stream == null) {
+            throw new ResourceNotFoundException();
+        }
         return stream;
     }
 

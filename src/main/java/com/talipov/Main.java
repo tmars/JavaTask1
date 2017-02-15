@@ -3,6 +3,9 @@ package com.talipov;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
+import java.io.InputStream;
+import java.util.Scanner;
+
 public class Main {
 
     /**
@@ -21,15 +24,15 @@ public class Main {
         Totalizer totalizer = new Totalizer();
 
         args = new String[]{
-                "http://ws.test.last-man.org/static/1.txt",
-                "http://ws.test.last-man.org/static/2.txt",
-                "src/main/resources/data/1.txt",
-                "src/main/resources/data/2.txt",
-                "http://ws.test.last-man.org/static/1.txt",
-                "http://ws.test.last-man.org/static/2.txt",
-                "src/main/resources/data/1.txt",
-                "src/main/resources/data/2.txt",
-                "src/main/resources/data/3.txt",
+            "http://ws.test.last-man.org/static/1.txt",
+            "http://ws.test.last-man.org/static/2.txt",
+            "src/main/resources/data/1.txt",
+            "src/main/resources/data/2.txt",
+            "http://ws.test.last-man.org/static/1.txt",
+            "http://ws.test.last-man.org/static/2.txt",
+            "src/main/resources/data/1.txt",
+            "src/main/resources/data/2.txt",
+//            "src/main/resources/data/3.txt",
         };
 //        singleThread(args, totalizer);
         multiThread(args, totalizer);
@@ -49,7 +52,11 @@ public class Main {
     private static void singleThread(String[] resources, Totalizer totalizer) {
         for (String resource: resources) {
             try {
-                ResourceReader reader = new ResourceReader(resource, totalizer);
+                InputStream stream = ResourceReader.getStream(resource);
+                ResourceReader reader = new ResourceReader(
+                    new Parser(new Scanner(stream)),
+                    totalizer
+                );
                 reader.read();
             } catch (ResourceNotFoundException e) {
                 logger.error("Ошибка чтения ресурса", e);

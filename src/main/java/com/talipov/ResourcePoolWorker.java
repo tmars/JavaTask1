@@ -4,7 +4,9 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 /**
  * Created by Марсель on 08.02.2017.
@@ -16,11 +18,6 @@ public class ResourcePoolWorker {
      * Логгер
      */
     private static final Logger logger = Logger.getLogger(ResourcePoolWorker.class);
-
-    /**
-     * Список потоков обработки
-     */
-    private ArrayList<Thread> threads = new ArrayList<Thread>();
 
     /**
      * Общий обработчик данных всех ресурсов
@@ -41,10 +38,16 @@ public class ResourcePoolWorker {
      * @param resources список ресурсов: URL или путь до файла
      */
     public void work(String[] resources) {
+        ArrayList<Thread> threads = new ArrayList<Thread>();
 
         for (String resource: resources) {
             try {
-                final ResourceReader reader = new ResourceReader(resource, this.totalizer);
+                InputStream stream = ResourceReader.getStream(resource);
+                final ResourceReader reader = new ResourceReader(
+                    new Parser(new Scanner(stream)),
+                    this.totalizer
+                );
+
                 Thread thread = new Thread(new Runnable() {
                     public void run() {
                         reader.read();
