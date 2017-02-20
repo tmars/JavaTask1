@@ -1,4 +1,9 @@
-package com.talipov;
+package com.talipov.parser;
+
+import com.talipov.ParserErrorException;
+import com.talipov.worker.ResourcePoolWorker;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 
 import java.util.Scanner;
 
@@ -6,19 +11,25 @@ import java.util.Scanner;
  * Created by Марсель on 07.02.2017.
  * Парсер целых чисел из данных ресурса
  */
-public class Parser {
+public abstract class Parser {
+
+    /**
+     * Логгер
+     */
+    protected static final Logger logger = Logger.getLogger(ResourcePoolWorker.class);
 
     /**
      * Входные данные
      */
-    private Scanner input;
+    protected String filename;
 
     /**
      * Конструктов
-     * @param input входные данные
+     * @param filename входные данные
      */
-    public Parser(Scanner input) {
-        this.input = input;
+    public Parser(String filename) {
+        this.filename = filename;
+        PropertyConfigurator.configure("src/main/resources/log4j.xml");
     }
 
     /**
@@ -27,20 +38,5 @@ public class Parser {
      * @return следующее целове число из выходных данных
      * @throws ParserErrorException выбрасывается в случае не корректных данных
      */
-    public Integer getNext() throws ParserErrorException {
-        if (input.hasNext()) {
-            if (input.hasNextInt()) {
-                return input.nextInt();
-            } else {
-                String s = input.next();
-                input.close();
-
-                throw new ParserErrorException(s);
-            }
-        } else {
-            input.close();
-        }
-
-        return null;
-    }
+    public abstract Integer getNext() throws ParserErrorException;
 }

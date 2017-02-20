@@ -1,5 +1,7 @@
 package test;
 
+import com.talipov.ResourceNotFoundException;
+import com.talipov.parser.ScannerParser;
 import org.junit.*;
 import static junit.framework.TestCase.*;
 
@@ -7,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
-import com.talipov.Parser;
+import com.talipov.parser.Parser;
 import com.talipov.ParserErrorException;
 
 /**
@@ -18,7 +20,12 @@ public class ParserTest {
     private Parser parser;
 
     private ArrayList<Integer> test(String input) throws ParserErrorException {
-        Parser parser = new Parser(new Scanner(input));
+        Parser parser = null;
+        try {
+            parser = new ScannerParser(input);
+        } catch (ResourceNotFoundException e) {
+            e.printStackTrace();
+        }
         ArrayList<Integer> nums = new ArrayList<Integer>();
         Integer value;
         while ((value = parser.getNext()) != null) {

@@ -39,8 +39,6 @@ public class Main {
         benchmark(args, new ResourcePoolWorker(new ReentrantLockTotalizer()));
         benchmark(args, new ExecutionServiceWorker(new Totalizer()));
         benchmark(args, new ExecutionServiceWorker(new ReentrantLockTotalizer()));
-        benchmark(args, new SingleWorker(new Totalizer()));
-        benchmark(args, new SingleWorker(new ReentrantLockTotalizer()));
     }
 
     /**

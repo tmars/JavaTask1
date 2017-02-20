@@ -1,6 +1,7 @@
 package test;
 
 import com.talipov.*;
+import com.talipov.parser.Parser;
 import com.talipov.totalizer.Totalizer;
 import org.junit.*;
 import static org.mockito.Mockito.*;
@@ -27,10 +28,10 @@ public class ResourceReaderTest {
         assertEquals("Чтение данных из ресурса", 6, totalizer.getResult());
     }
 
-    @Test(expected = ResourceNotFoundException.class)
-    public void getStream() throws ResourceNotFoundException{
-        ResourceReader.getStream("C:C");
-    }
+//    @Test(expected = ResourceNotFoundException.class)
+//    public void getStream() throws ResourceNotFoundException{
+//        ResourceReader.getStream("C:C");
+//    }
 
     @AfterClass
     public static void finish() {

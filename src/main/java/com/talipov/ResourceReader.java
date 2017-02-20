@@ -1,5 +1,6 @@
 package com.talipov;
 
+import com.talipov.parser.Parser;
 import com.talipov.totalizer.TotalizerInterface;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
@@ -57,37 +58,4 @@ public class ResourceReader {
             totalizer.setActive(false);
         }
     }
-
-    /**
-     * Возвращает поток данных соответствующего ресурса
-     * @param path ресурс: URL или путь до файла
-     * @return потом данных для чтения
-     */
-    public static InputStream getStream(String path) throws ResourceNotFoundException {
-        InputStream stream = null;
-
-        if (path.startsWith("http://") || path.startsWith("https://")) {
-            try {
-                URL url = new URL(path);
-                stream = url.openStream();
-            } catch (MalformedURLException e) {
-                logger.error("Ошибка чтения ресурса по URL: " + path);
-            } catch (IOException e) {
-                logger.error("Ошибка при работе с ресурсом:" + path);
-            }
-        } else {
-            try {
-                stream = new FileInputStream(path);
-            } catch (FileNotFoundException e) {
-                logger.error("Ошибка чтения файла ресурса: " + path);
-            }
-        }
-
-        if (stream == null) {
-            throw new ResourceNotFoundException();
-        }
-        return stream;
-    }
-
-
 }

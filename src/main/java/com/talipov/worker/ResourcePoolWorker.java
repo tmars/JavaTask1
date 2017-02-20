@@ -1,8 +1,9 @@
 package com.talipov.worker;
 
-import com.talipov.Parser;
+import com.talipov.parser.Parser;
 import com.talipov.ResourceNotFoundException;
 import com.talipov.ResourceReader;
+import com.talipov.parser.ScannerParser;
 import com.talipov.totalizer.TotalizerInterface;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
@@ -40,9 +41,8 @@ public class ResourcePoolWorker extends ResourceWorker {
 
         for (String resource: resources) {
             try {
-                InputStream stream = ResourceReader.getStream(resource);
                 final ResourceReader reader = new ResourceReader(
-                    new Parser(new Scanner(stream)),
+                    new ScannerParser(resource),
                     this.totalizer
                 );
 
