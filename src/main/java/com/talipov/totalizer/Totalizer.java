@@ -1,4 +1,4 @@
-package com.talipov;
+package com.talipov.totalizer;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
@@ -7,7 +7,7 @@ import org.apache.log4j.PropertyConfigurator;
  * Created by Марсель on 07.02.2017.
  * Общий обработчик данных всех ресурсов
  */
-public class Totalizer {
+public class Totalizer implements TotalizerInterface {
 
     /**
      * Логгер
@@ -33,8 +33,7 @@ public class Totalizer {
     }
 
     /**
-     * Добавляет элемент в обработку
-     * @param num входной элемент
+     * @inheritDoc
      */
     public synchronized void add(int num) {
         if (num <= 0 || num % 2 == 1) {
@@ -45,24 +44,21 @@ public class Totalizer {
     }
 
     /**
-     * Возвращает результат обработки данных
-     * @return результат обработки
+     * @inheritDoc
      */
     public int getResult() {
         return result;
     }
 
     /**
-     * Активен ли обработчик
-     * @return флаг активности
+     * @inheritDoc
      */
     public boolean isActive() {
         return isActive;
     }
 
     /**
-     * Установка флага активности обработчика
-     * @param active флага активности
+     * @inheritDoc
      */
     public synchronized void setActive(boolean active) {
         isActive = active;

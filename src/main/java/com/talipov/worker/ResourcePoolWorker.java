@@ -1,46 +1,42 @@
-package com.talipov;
+package com.talipov.worker;
 
+import com.talipov.Parser;
+import com.talipov.ResourceNotFoundException;
+import com.talipov.ResourceReader;
+import com.talipov.totalizer.TotalizerInterface;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 /**
- * Created by Марсель on 19.02.2017.
+ * Created by Марсель on 08.02.2017.
+ * Пул потоков обработки всех ресурсов
  */
-public class ExecutionServiceWorker {
+public class ResourcePoolWorker extends ResourceWorker {
+
     /**
      * Логгер
      */
     private static final Logger logger = Logger.getLogger(ResourcePoolWorker.class);
 
     /**
-     * Общий обработчик данных всех ресурсов
-     */
-    private Totalizer totalizer;
-
-    /**
      * Конструктор
      * @param totalizer общий обработчик данных всех ресурсов
      */
-    public ExecutionServiceWorker(Totalizer totalizer) {
-        this.totalizer = totalizer;
+    public ResourcePoolWorker(TotalizerInterface totalizer) {
+        super(totalizer);
         PropertyConfigurator.configure("src/main/resources/log4j.xml");
     }
 
     /**
-     * Запуск потоков обработки ресурсов
-     * @param resources список ресурсов: URL или путь до файла
+     * @inheritDoc
      */
+    @Override
     public void work(String[] resources) {
-        ExecutorService pool = Executors.newFixedThreadPool(resources.length);
-        ArrayList<Future> futures = new ArrayList<Future>();
+        ArrayList<Thread> threads = new ArrayList<Thread>();
 
         for (String resource: resources) {
             try {
@@ -50,26 +46,29 @@ public class ExecutionServiceWorker {
                     this.totalizer
                 );
 
-                futures.add(pool.submit(new Runnable() {
+                Thread thread = new Thread(new Runnable() {
                     public void run() {
                         reader.read();
                     }
-                }));
-
+                });
+                threads.add(thread);
             } catch (ResourceNotFoundException e) {
                 logger.error("Во время работы потоков, произошла ошибка с чтением ресурса", e);
+                return;
             }
         }
 
-        for (Future future: futures) {
+        logger.info("Запуск потоков обработки ресурсов. Кол-во: " + threads.size());
+        for (Thread thread: threads) {
+            thread.start();
+        }
+
+        for (Thread thread: threads) {
             try {
-                future.get();
+                thread.join();
             } catch (InterruptedException e) {
-                logger.error("Прерывание на одном из потоков");
-            } catch (ExecutionException e) {
-                logger.error("Ошибка в работе одного из потоков");
+                logger.error("Ошибка при работе с потоками обработки ресурсов");
             }
         }
-
     }
 }

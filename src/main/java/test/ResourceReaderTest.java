@@ -1,6 +1,7 @@
 package test;
 
 import com.talipov.*;
+import com.talipov.totalizer.Totalizer;
 import org.junit.*;
 import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;

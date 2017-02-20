@@ -1,12 +1,12 @@
 package com.talipov;
 
+import com.talipov.totalizer.TotalizerInterface;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Scanner;
 
 /**
  * Created by Марсель on 08.02.2017.
@@ -27,7 +27,7 @@ public class ResourceReader {
     /**
      * Общий обработчик данных всех ресурсов
      */
-    private Totalizer totalizer;
+    private TotalizerInterface totalizer;
 
     /**
      * Конструктор
@@ -35,7 +35,7 @@ public class ResourceReader {
      * @param totalizer общий обработчик данных всех ресурсов
      * @throws FileNotFoundException выкидывается в случае если ресурс не найден
      */
-    public ResourceReader(Parser parser, Totalizer totalizer) {
+    public ResourceReader(Parser parser, TotalizerInterface totalizer) {
         this.parser = parser;
         this.totalizer = totalizer;
         PropertyConfigurator.configure("src/main/resources/log4j.xml");

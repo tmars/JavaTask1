@@ -1,6 +1,6 @@
 package test;
 
-import com.talipov.Totalizer;
+import com.talipov.totalizer.Totalizer;
 import org.junit.*;
 import static junit.framework.TestCase.*;
 

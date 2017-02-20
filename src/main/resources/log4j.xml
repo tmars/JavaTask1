@@ -14,7 +14,7 @@
     </appender>
     <root>
         <priority value="TRACE"/>
-        <appender-ref ref="AppenderConsole" />
+        <!--<appender-ref ref="AppenderConsole" />-->
         <appender-ref ref="AppenderFile" />
     </root>
 </log4j:configuration>
