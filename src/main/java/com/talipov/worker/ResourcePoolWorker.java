@@ -36,13 +36,13 @@ public class ResourcePoolWorker extends ResourceWorker {
      * @inheritDoc
      */
     @Override
-    public void work(String[] resources) {
+    public void work(String[] resources, Class<? extends Parser> parserClass) {
         ArrayList<Thread> threads = new ArrayList<Thread>();
 
         for (String resource: resources) {
             try {
                 final ResourceReader reader = new ResourceReader(
-                    new ScannerParser(resource),
+                    createParser(parserClass, resource),
                     this.totalizer
                 );
 

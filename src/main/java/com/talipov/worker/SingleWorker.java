@@ -1,5 +1,6 @@
 package com.talipov.worker;
 
+import com.talipov.parser.AsyncParser;
 import com.talipov.parser.Parser;
 import com.talipov.ResourceNotFoundException;
 import com.talipov.ResourceReader;
@@ -35,11 +36,11 @@ public class SingleWorker extends ResourceWorker {
      * @inheritDoc
      */
     @Override
-    public void work(String[] resources) {
+    public void work(String[] resources, Class<? extends Parser> parserClass) {
         for (String resource: resources) {
             try {
                 ResourceReader reader = new ResourceReader(
-                        new ScannerParser(resource),
+                        createParser(parserClass, resource),
                         totalizer
                 );
                 reader.read();

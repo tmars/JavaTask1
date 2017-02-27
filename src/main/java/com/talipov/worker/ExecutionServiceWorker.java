@@ -1,16 +1,15 @@
 package com.talipov.worker;
 
-import com.talipov.parser.Parser;
 import com.talipov.ResourceNotFoundException;
 import com.talipov.ResourceReader;
-import com.talipov.parser.ScannerParser;
+import com.talipov.parser.Parser;
 import com.talipov.totalizer.TotalizerInterface;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
-import java.io.InputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Scanner;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -38,14 +37,14 @@ public class ExecutionServiceWorker extends ResourceWorker {
      * @inheritDoc
      */
     @Override
-    public void work(String[] resources) {
+    public void work(String[] resources, Class<? extends Parser> parserClass) {
         ExecutorService pool = Executors.newFixedThreadPool(resources.length);
         ArrayList<Future> futures = new ArrayList<Future>();
 
         for (String resource: resources) {
             try {
                 final ResourceReader reader = new ResourceReader(
-                    new ScannerParser(resource),
+                    createParser(parserClass, resource),
                     this.totalizer
                 );
 
@@ -56,7 +55,8 @@ public class ExecutionServiceWorker extends ResourceWorker {
                 }));
 
             } catch (ResourceNotFoundException e) {
-                logger.error("Во время работы потоков, произошла ошибка с чтением ресурса", e);
+                logger.error("Ошибка чтения ресурса", e);
+                return;
             }
         }
 

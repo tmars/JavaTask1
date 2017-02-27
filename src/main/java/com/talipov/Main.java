@@ -1,5 +1,8 @@
 package com.talipov;
 
+import com.talipov.parser.AsyncParser;
+import com.talipov.parser.Parser;
+import com.talipov.parser.ScannerParser;
 import com.talipov.totalizer.ReentrantLockTotalizer;
 import com.talipov.totalizer.Totalizer;
 import com.talipov.worker.ExecutionServiceWorker;
@@ -8,6 +11,8 @@ import com.talipov.worker.ResourceWorker;
 import com.talipov.worker.SingleWorker;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
+
+import java.util.Scanner;
 
 public class Main {
 
@@ -29,16 +34,19 @@ public class Main {
 //            "http://ws.test.last-man.org/static/1.txt",
 //            "http://ws.test.last-man.org/static/2.txt",
             "src/main/resources/data/1.txt",
-            "src/main/resources/data/2.txt",
-            "src/main/resources/data/1.txt",
-            "src/main/resources/data/2.txt",
+//            "src/main/resources/data/2.txt",
+//            "src/main/resources/data/1.txt",
+//            "src/main/resources/data/2.txt",
 //            "src/main/resources/data/3.txt",
         };
+        Class<? extends Parser> parserClass = AsyncParser.class;
 
-        benchmark(args, new ResourcePoolWorker(new Totalizer()));
-        benchmark(args, new ResourcePoolWorker(new ReentrantLockTotalizer()));
-        benchmark(args, new ExecutionServiceWorker(new Totalizer()));
-        benchmark(args, new ExecutionServiceWorker(new ReentrantLockTotalizer()));
+        benchmark(args, new ResourcePoolWorker(new Totalizer()), parserClass);
+        benchmark(args, new ResourcePoolWorker(new ReentrantLockTotalizer()), parserClass);
+        benchmark(args, new ExecutionServiceWorker(new Totalizer()), parserClass);
+        benchmark(args, new ExecutionServiceWorker(new ReentrantLockTotalizer()), parserClass);
+        benchmark(args, new SingleWorker(new Totalizer()), parserClass);
+        benchmark(args, new SingleWorker(new ReentrantLockTotalizer()), parserClass);
     }
 
     /**
@@ -47,10 +55,10 @@ public class Main {
      * ReentrantLockTotalizer + ResourcePoolWorker 4155
      * ReentrantLockTotalizer + ExecutionServiceWorker 2964
      */
-    public static void benchmark(String[] resources, ResourceWorker worker) {
+    public static void benchmark(String[] resources, ResourceWorker worker, Class<? extends Parser> parserClass) {
         long time = System.currentTimeMillis();
         for (int i = 0; i < 10; i++) {
-            worker.work(resources);
+            worker.work(resources, parserClass);
         }
         time = System.currentTimeMillis() - time;
 
@@ -59,8 +67,9 @@ public class Main {
             return;
         }
 
-        System.out.println("[" + worker.getClass().getSimpleName() + "] [" +
-                worker.getTotalizer().getClass().getSimpleName() + "] " +
+        System.out.println("Worker=[" + worker.getClass().getSimpleName() + "] " +
+                "Totalizer=[" + worker.getTotalizer().getClass().getSimpleName() + "] " +
+                "Parser=[" + parserClass.getSimpleName() + "] " +
                 "Время обработки = " + time + ", " +
                 "Результат = " + worker.getTotalizer().getResult());
     }
